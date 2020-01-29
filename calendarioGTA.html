@@ -46,9 +46,16 @@
       </h1>
       
 	  <div class="select">
-		  <select v-model="selected">
-			<option>Select worker</option>
+		  <select v-model="selectedw">
+			<option disabled>Select worker</option>
 			<option v-for="(w,index) in workers" :value="index">{{w}}</option>
+		  </select>
+	  </div>
+	  <div class="select">
+		  <select v-model="selectedt">
+			<option>Select timetable</option>
+			<option value="8">08:00 - 20:00</option>
+			<option value="9">09:00 - 21:00</option>
 		  </select>
 	  </div>
 	 
@@ -83,10 +90,13 @@
 		worker:'',
 		workers:[],
 		
-		selected:'',
+		selectedw:'',
+		selectedt:'',
 		get_date: '',
 		mes: '',
 		any: '',
+		sTime: '',
+		eTime: '',
 		
 		selectb: true,
 		
@@ -153,8 +163,17 @@
 			this.output='Subject, Start Date, Start Time, End Date, End Time, Location, Description\n';
 			
 			//Worker selected
-			this.worker=this.lines[this.selected+1].split(';');
-
+			this.worker=this.lines[this.selectedw+1].split(';');
+			
+			//timetable
+			
+			if (this.selectedt=="9"){
+				this.sTime="9:00 AM";
+				this.eTime="21:00 PM";
+			}else if (this.selectedt=="8"){
+				this.sTime="8:00 AM";
+				this.eTime="20:00 PM";
+			}
 			
 			//For each D and N
 			for (var j=0; j<this.days.length; j++){
@@ -162,7 +181,7 @@
 				if (this.worker[j+4]=='D'){
 					var returnDay = this.days[j]+'/'+this.mes+'/'+this.any;
 					
-					this.output += 'TURNO DE DIA,'+returnDay+',09:00 AM,'+returnDay+', 21:00 PM,PMI AIRPORT,\n';
+					this.output += 'TURNO DE DIA,'+returnDay+','+this.sTime+','+returnDay+','+this.eTime+',PMI AIRPORT,\n';
 				}
 					
 				if (this.worker[j+4]=='N'){
@@ -172,7 +191,7 @@
 					endDate.setDate(endDate.getDate() + 1);
 					endDate = endDate.toLocaleDateString("es-ES",options);
 
-					this.output += 'TURNO DE NOCHE,'+startDate+',21:00 PM,'+endDate+',09:00 AM,PMI AIRPORT,\n';
+					this.output += 'TURNO DE NOCHE,'+startDate+','+this.eTime+','+endDate+','+this.sTime+',PMI AIRPORT,\n';
 				}
 					
 				
