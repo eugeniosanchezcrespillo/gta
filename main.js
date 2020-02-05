@@ -108,6 +108,7 @@ var gta = new Vue({
 			for (var j=0; j<this.days.length; j++){
 			
 				if (this.worker[j+4]=='D'){
+					
 					var returnDay = this.days[j]+'/'+this.mes+'/'+this.any;
 					
 					this.output += 'TURNO DE DIA,'+returnDay+','+this.sTime+','+returnDay+','+this.eTime+',PMI AIRPORT,\n';
@@ -115,15 +116,18 @@ var gta = new Vue({
 					
 				if (this.worker[j+4]=='N'){
 				
+					if (this.days[j]<10)
+						this.days[j]='0'+this.days[j];		
 					var startDate = this.days[j]+'/'+this.mes+'/'+this.any;
+					
 					var endDate = new Date (this.any+'-'+this.mes+'-'+this.days[j]);
 					endDate.setDate(endDate.getDate() + 1);
+					
 					endDate = endDate.toLocaleDateString("es-ES",options);
 
 					this.output += 'TURNO DE NOCHE,'+startDate+','+this.eTime+','+endDate+','+this.sTime+',PMI AIRPORT,\n';
 				}
 					
-				
 			}
 				
 				
@@ -131,11 +135,14 @@ var gta = new Vue({
 		},
 		
 		downcalendar: function (){
-			var hiddenElement = document.createElement('a');
+			/*var hiddenElement = document.createElement('a');
 			hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(this.output);
 			hiddenElement.target = '_blank';
 			hiddenElement.download = this.workerDownload+'_'+this.mes+'_'+this.any+'.csv';
-			hiddenElement.click();
+			hiddenElement.click();*/
+			//FileSaver.js Version to fix problems downloading file in IExplore
+			var blob = new Blob([this.output], { type: 'application/xml' });
+			saveAs(blob, this.workerDownload+'_'+this.mes+'_'+this.any+'.csv');
 		}
 	}
 	
