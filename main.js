@@ -85,6 +85,8 @@ var gta = new Vue({
 			*/
 			
 			var options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+			var startDate = '';
+			var endDate= '';
 			this.output='Subject, Start Date, Start Time, End Date, End Time, Location, Description\n';
 			
 			//Worker selected
@@ -116,13 +118,15 @@ var gta = new Vue({
 					
 				if (this.worker[j+4]=='N'){
 				
-					if (this.days[j]<10)
-						this.days[j]='0'+this.days[j];		
-					var startDate = this.days[j]+'/'+this.mes+'/'+this.any;
+					startDate = this.days[j]+'/'+this.mes+'/'+this.any;
+					endDate = new Date (this.any+'-'+this.mes+'-'+this.days[j]);
 					
-					var endDate = new Date (this.any+'-'+this.mes+'-'+this.days[j]);
+					if (this.days[j]<10){
+						startDate = '0'+this.days[j]+'/'+this.mes+'/'+this.any;
+						endDate = new Date (this.any+'-'+this.mes+'-'+'0'+this.days[j]);	
+					}
+							
 					endDate.setDate(endDate.getDate() + 1);
-					
 					endDate = endDate.toLocaleDateString("es-ES",options);
 
 					this.output += 'TURNO DE NOCHE,'+startDate+','+this.eTime+','+endDate+','+this.sTime+',PMI AIRPORT,\n';
