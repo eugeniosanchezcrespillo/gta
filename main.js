@@ -32,6 +32,8 @@ var gta = new Vue({
 		
 		sTime: '',
 		eTime: '',
+		sTimet: '',
+		eTimet: '',
 		download: false,
 		workerDownload:'',
 		
@@ -101,44 +103,65 @@ var gta = new Vue({
 					this.items=this.lines[j].split('"');
 					this.worker=this.items[1];
 						
-					//Type of worker		
-					this.tworker = this.items[2].split(',');
-					
-					//IE NOT SUPPORTED if (!this.workers.includes(this.worker))
-					if (this.workers.indexOf(this.worker)<0)
-						this.workers.push(this.worker);
-						/* OLD OBJECT this.workers.push({
-							name: this.worker,
-							type: this.tworker[1]
-						})*/
-					
-					for (var k=0; k<this.days.length; k++){
+					//Type of worker
+					if (typeof this.items[2]!== 'undefined'){	
+						this.tworker = this.items[2].split(',');
 						
-						if (this.days[k].length==1)
-							this.days[k]='0'+this.days[k];
+						//IE NOT SUPPORTED if (!this.workers.includes(this.worker))
+						if (this.workers.indexOf(this.worker)<0)
+							this.workers.push(this.worker);
+							/* OLD OBJECT this.workers.push({
+								name: this.worker,
+								type: this.tworker[1]
+							})*/
+						
+						for (var k=0; k<this.days.length; k++){
+							
+							if (this.days[k].length==1)
+								this.days[k]='0'+this.days[k];
 
-						switch(this.tworker[k+4]){
-							case 'D': 
-							this.turnos.push({
-								name: this.worker,
-								tname: this.tworker[1],
-								date: this.days[k]+'/'+this.mes+'/'+this.any,
-								tdate: 'D'
-							});
-							break;
-							
-							case 'N': 
-							this.turnos.push({
-								name: this.worker,
-								tname: this.tworker[1],
-								date: this.days[k]+'/'+this.mes+'/'+this.any,
-								tdate: 'N'
-							});
-							break;	
-						}//fin switch
-							
-					}//end each day
+							switch(this.tworker[k+4]){
+								case 'D': 
+								this.turnos.push({
+									name: this.worker,
+									tname: this.tworker[1],
+									date: this.days[k]+'/'+this.mes+'/'+this.any,
+									tdate: 'D'
+								});
+								break;
+								
+								case 'N': 
+								this.turnos.push({
+									name: this.worker,
+									tname: this.tworker[1],
+									date: this.days[k]+'/'+this.mes+'/'+this.any,
+									tdate: 'N'
+								});
+								break;
+								
+								case 'M': 
+								this.turnos.push({
+									name: this.worker,
+									tname: this.tworker[1],
+									date: this.days[k]+'/'+this.mes+'/'+this.any,
+									tdate: 'M'
+								});
+								break;
+
+								case 'T': 
+								this.turnos.push({
+									name: this.worker,
+									tname: this.tworker[1],
+									date: this.days[k]+'/'+this.mes+'/'+this.any,
+									tdate: 'T'
+								});
+								break;
+							}//fin switch
+								
+						}//end for each day
 					
+					}//end typeof line
+
 				}//end each line
 				
 			}//fin each file
@@ -179,6 +202,11 @@ var gta = new Vue({
 			}else if (this.tipo=="8"){
 				this.sTime="8:00 AM";
 				this.eTime="20:00 PM";
+			}else if (this.tipo=="17"){
+				this.sTime="7:00 AM";
+				this.eTime="15:30 PM";
+				this.sTimet="15:30 AM";
+				this.eTimet="23:59 PM";
 			}
 			
 			//For each D and N
@@ -197,6 +225,10 @@ var gta = new Vue({
 						this.output += 'T.DIA,'+startDate+','+this.sTime+','+startDate+','+this.eTime+',AIRPORT,\n';
 					else if (this.turnos[i].tdate=="N")
 						this.output += 'T.NOCHE,'+startDate+','+this.sTime+','+endDate+','+this.eTime+',AIRPORT,\n';
+					else if (this.turnos[i].tdate=="M")
+						this.output += 'MAÑANA,'+startDate+','+this.sTime+','+startDate+','+this.eTime+',AIRPORT,\n';
+					else if (this.turnos[i].tdate=="T")
+						this.output += 'MAÑANA,'+startDate+','+this.sTimet+','+startDate+','+this.eTimet+',AIRPORT,\n';		
 				}
 			}
 				
