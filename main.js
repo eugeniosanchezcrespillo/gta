@@ -3,73 +3,148 @@ var gta = new Vue({
 	el: '#app',
 	data: {
 		title: 'Aena GTA',
+
+		//parser
 		input: '',
-		output: '',
-		
 		content: '',
-		lines: '',
-		days: '',
-		
-		worker:'',
-		workerDownload:'',
+		//REG EXP  MES/AÑO [A-Z]+/[0-9]{4}
+		regex :  /[A-Z]+\/[0-9]{4}/,
+		selectb: true,
 		workers:[],
+		worker:'',
+		tworker: '',
+		turnos:[],
+		fecha: '',
+		any: '',
+		mes: '',
+		days: '',
+		lines: '',
+		tlines: '',
+		items: '',
 		
+
+
+
+		//calendar
+		output: '',
 		selectedw:'',
 		tipo:'',
-		get_date: '',
-		mes: '',
-		any: '',
+		
 		sTime: '',
 		eTime: '',
 		download: false,
+		workerDownload:'',
 		
-		selectb: true,
 		
 		
 	},
 	methods:{
+
+		getFecha: function(meses){
+			switch (meses){
+				case 'ENERO': return '01'; break;
+				case 'FEBRERO': return '02'; break;
+				case 'MARZO': return '03'; break;
+				case 'ABRIL':return '04'; break;
+				case 'MAYO': return '05'; break;
+				case 'JUNIO': return '06'; break;
+				case 'JULIO': return '07'; break;
+				case 'AGOSTO': return '08'; break;
+				case 'SEPTIEMBRE': return '09'; break;
+				case 'OCTUBRE': return '10'; break;
+				case 'NOVIEMBRE': return '11'; break;
+				case 'DICIEMBRE': return '12'; break;
+			}
+		},
+
 		parser: function (){
-			//Get content
-			
+			//Get all content
 			this.input = document.getElementById('out').innerHTML;
-			this.content = this.input.split(",OCU,GRP,PTR,");
+			this.input = this.input.split("SHEET: Sheet1");
+			//alert(this.input[1]);
 			
-			//REG EXP  MES/AÑO [A-Z]+/[0-9]{4}
-			var regex = /[A-Z]+\/[0-9]{4}/;
-    		this.get_date = regex.exec(this.content[0]);
-			this.get_date = this.get_date[0].split("/");
-			this.any=this.get_date[1];
-
-			switch (this.get_date[0]){
-				case 'ENERO': this.mes = '01'; break;
-				case 'FEBRERO': this.mes = '02'; break;
-				case 'MARZO': this.mes = '03'; break;
-				case 'ABRIL': this.mes = '04'; break;
-				case 'MAYO': this.mes = '05'; break;
-				case 'JUNIO': this.mes = '06'; break;
-				case 'JULIO': this.mes = '07'; break;
-				case 'AGOSTO': this.mes = '08'; break;
-				case 'SEPTIEMBRE': this.mes = '09'; break;
-				case 'OCTUBRE': this.mes = '10'; break;
-				case 'NOVIEMBRE': this.mes = '11'; break;
-				case 'DICIEMBRE': this.mes = '12'; break;	
-			}
-
-			//Split lines
-			this.lines = this.content[1].split('<br>');
-			
-			//Get month days
-			this.days = this.lines[0];
-			this.days = this.days.split(',');
-			
-			//Each Line (worker)
-			for (var i=1; i < this.lines.length; i++){
+			//Get each file
+			for (var i = 1; i<this.input.length; i++){
 				
-				this.worker=this.lines[i].split('"');
-				this.workers.push(this.worker[1]);
-			}
+				//Get Content
+				this.content = this.input[i].split(",OCU,GRP,PTR,");
+				
+				//Get Date
+				this.fecha = this.regex.exec(this.content[0]);
+				this.fecha = this.fecha[0].split("/");
+				
+				//Get month and year
+				this.any = this.fecha[1];
+				this.mes = this.getFecha(this.fecha[0]);
+				
+				//alert("Paso1: "+this.mes);
+				//alert(this.content[1]);
+				
+				//Split lines
+				//if (this.content[1].includes('<br>'))
+				//	alert("hay br");
+				this.lines = this.content[1].split('<br>');
+				
+				//Get month days
+				this.days = this.lines[0];
+				//alert(this.days);
+				this.days = this.days.split(',');
+				
+				//Adjust lines
+				this.tlines = this.lines.length;
+				if (typeof this.lines[this.tlines] == 'undefined')
+					this.tlines--;
+
+				//Each Line (worker)
+				for (var j=1; j < this.tlines; j++){
+					
+					this.items=this.lines[j].split('"');
+					this.worker=this.items[1];
+						
+					//Type of worker		
+					this.tworker = this.items[2].split(',');
+					
+					//IE NOT SUPPORTED if (!this.workers.includes(this.worker))
+					if (this.workers.indexOf(this.worker)<0)
+						this.workers.push(this.worker);
+						/* OLD OBJECT this.workers.push({
+							name: this.worker,
+							type: this.tworker[1]
+						})*/
+					
+					for (var k=0; k<this.days.length; k++){
+						
+						if (this.days[k].length==1)
+							this.days[k]='0'+this.days[k];
+
+						switch(this.tworker[k+4]){
+							case 'D': 
+							this.turnos.push({
+								name: this.worker,
+								tname: this.tworker[1],
+								date: this.days[k]+'/'+this.mes+'/'+this.any,
+								tdate: 'D'
+							});
+							break;
+							
+							case 'N': 
+							this.turnos.push({
+								name: this.worker,
+								tname: this.tworker[1],
+								date: this.days[k]+'/'+this.mes+'/'+this.any,
+								tdate: 'N'
+							});
+							break;	
+						}//fin switch
+							
+					}//end each day
+					
+				}//end each line
+				
+			}//fin each file
 			
 			this.selectb = false;
+			
 		},
 		
 		calendar: function (){
@@ -90,9 +165,9 @@ var gta = new Vue({
 			this.output='Subject, Start Date, Start Time, End Date, End Time, Location, Description\n';
 			
 			//Worker selected
-			this.worker=this.lines[this.selectedw+1].split('"');
-			this.workerDownload=this.worker[1];
-			this.worker=this.worker[2].split(',');
+			//alert("el indice del worker es:"+this.selectedw);
+			//alert("el worker es:"+this.workers[this.selectedw]);
+
 			
 			var e = document.getElementById ("tipo");
             this.tipo = e.options[e.selectedIndex].value;
@@ -107,33 +182,23 @@ var gta = new Vue({
 			}
 			
 			//For each D and N
-			for (var j=0; j<this.days.length; j++){
-			
-				if (this.worker[j+4]=='D'){
+			for (var i=0; i<this.turnos.length; i++)
+			{
+				if (this.turnos[i].name==this.workers[this.selectedw])
+				{
 					
-					var returnDay = this.days[j]+'/'+this.mes+'/'+this.any;
+					startDate = this.turnos[i].date;
 					
-					this.output += 'TURNO DE DIA,'+returnDay+','+this.sTime+','+returnDay+','+this.eTime+',PMI AIRPORT,\n';
-				}
-					
-				if (this.worker[j+4]=='N'){
-				
-					startDate = this.days[j]+'/'+this.mes+'/'+this.any;
-					endDate = new Date (this.any+'-'+this.mes+'-'+this.days[j]);
-					
-					if (this.days[j]<10){
-						startDate = '0'+this.days[j]+'/'+this.mes+'/'+this.any;
-						endDate = new Date (this.any+'-'+this.mes+'-'+'0'+this.days[j]);	
-					}
-							
+					endDate = new Date ((this.turnos[i].date).substr(6,4)+'-'+(this.turnos[i].date).substr(3,2)+'-'+(this.turnos[i].date).substr(0,2));
 					endDate.setDate(endDate.getDate() + 1);
 					endDate = endDate.toLocaleDateString("es-ES",options);
 
-					this.output += 'TURNO DE NOCHE,'+startDate+','+this.eTime+','+endDate+','+this.sTime+',PMI AIRPORT,\n';
+					if (this.turnos[i].tdate=="D")
+						this.output += 'T.DIA,'+startDate+','+this.sTime+','+startDate+','+this.eTime+',AIRPORT,\n';
+					else if (this.turnos[i].tdate=="N")
+						this.output += 'T.NOCHE,'+startDate+','+this.sTime+','+endDate+','+this.eTime+',AIRPORT,\n';
 				}
-					
 			}
-				
 				
 			this.download = true;
 		},
@@ -146,7 +211,7 @@ var gta = new Vue({
 			hiddenElement.click();*/
 			//FileSaver.js Version to fix problems downloading file in IExplore
 			var blob = new Blob([this.output], { type: 'application/xml' });
-			saveAs(blob, this.workerDownload+'_'+this.mes+'_'+this.any+'.csv');
+			saveAs(blob, this.workers[this.selectedw]+'_'+this.mes+'_'+this.any+'.csv');
 		}
 	}
 	
