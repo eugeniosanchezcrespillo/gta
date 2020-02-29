@@ -220,7 +220,9 @@ var gta = new Vue({
 					endDate = new Date ((this.turnos[i].date).substr(6,4)+'-'+(this.turnos[i].date).substr(3,2)+'-'+(this.turnos[i].date).substr(0,2));
 					endDate.setDate(endDate.getDate() + 1);
 					endDate = endDate.toLocaleDateString("es-ES",options);
-					
+					endDate = endDate.split("/");
+					endDate = endDate[0]+'/'+endDate[1]+'/'+endDate[2];
+
 					if (this.turnos[i].tdate=="D")
 						this.output += 'T.DIA,'+startDate+','+this.sTime+','+startDate+','+this.eTime+',AIRPORT,\n';
 					else if (this.turnos[i].tdate=="N")
