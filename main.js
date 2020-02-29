@@ -221,6 +221,8 @@ var gta = new Vue({
 					endDate.setDate(endDate.getDate() + 1);
 					endDate = endDate.toLocaleDateString("es-ES",options);
 
+					alert(endDate);
+
 					if (this.turnos[i].tdate=="D")
 						this.output += 'T.DIA,'+startDate+','+this.sTime+','+startDate+','+this.eTime+',AIRPORT,\n';
 					else if (this.turnos[i].tdate=="N")
@@ -243,7 +245,7 @@ var gta = new Vue({
 			hiddenElement.click();*/
 			//FileSaver.js Version to fix problems downloading file in IExplore
 			var blob = new Blob([this.output], { type: 'application/xml' });
-			saveAs(blob, this.workers[this.selectedw]+'_'+this.mes+'_'+this.any+'.csv');
+			saveAs(blob, this.workers[this.selectedw]+'_calendar_'+this.any+'.csv');
 		}
 	}
 	
