@@ -244,7 +244,8 @@ var gta = new Vue({
 			hiddenElement.download = this.workerDownload+'_'+this.mes+'_'+this.any+'.csv';
 			hiddenElement.click();*/
 			//FileSaver.js Version to fix problems downloading file in IExplore
-			alert(this.output);
+			//alert(this.output);
+			
 			var blob = new Blob([this.output], { type: 'application/xml' });
 			saveAs(blob, this.workers[this.selectedw]+'_calendar_'+this.any+'.csv');
 		}
