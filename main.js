@@ -219,10 +219,9 @@ var gta = new Vue({
 					
 					endDate = new Date ((this.turnos[i].date).substr(6,4)+'-'+(this.turnos[i].date).substr(3,2)+'-'+(this.turnos[i].date).substr(0,2));
 					endDate.setDate(endDate.getDate() + 1);
-					endDate = endDate.toLocaleDateString("es-ES",options);
-					//endDate = endDate.split("/");
-					//endDate = endDate[0]+'/'+endDate[1]+'/'+endDate[2];
-					endDate = String(endDate);
+					//endDate = endDate.toLocaleDateString("es-ES",options);
+					endDate = endDate.toISOString();
+					endDate = endDate.substr(8,2)+'/'+endDate.substr(5,2)+'/'+endDate.substr(0,4);
 					//alert (endDate);
 
 					if (this.turnos[i].tdate=="D")
