@@ -196,7 +196,8 @@ var gta = new Vue({
 						}
 						this.output += this.turnos[l].name+"\n";
 					}
-				}	
+				}
+				this.selectdate="";	
 			}	
 			
 
