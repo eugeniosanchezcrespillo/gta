@@ -28,6 +28,7 @@ var gta = new Vue({
 		//calendar
 		output: '',
 		selectedw:'',
+		selectdate:'',
 		tipo:'',
 		
 		sTime: '',
@@ -169,7 +170,38 @@ var gta = new Vue({
 			this.selectb = false;
 			
 		},
-		
+
+		whoWorks: function (){
+
+			
+
+			if (this.selectdate == ""){
+
+				alert ("Please, choose a correct date");
+				return false;
+
+			}else{
+				
+				this.selectdate = this.selectdate.substr(8,2)+'/'+this.selectdate.substr(5,2)+'/'+this.selectdate.substr(0,4)
+				this.output = this.selectdate+"\n";
+
+				for (var l=0; l<this.turnos.length; l++){
+
+					if (this.selectdate == this.turnos[l].date){
+						switch(this.turnos[l].tdate){
+							case 'D': this.output += "DIA: "; break;
+							case 'N': this.output += "NOCHE: "; break;
+							case 'M': this.output += "MAÑANA: "; break;
+							case 'T': this.output += "TARDE: "; break;
+						}
+						this.output += this.turnos[l].name+"\n";
+					}
+				}	
+			}	
+			
+
+		},
+
 		calendar: function (){
 			
 			/*
