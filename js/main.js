@@ -238,7 +238,7 @@ var gta = new Vue({
 			}else if (this.tipo=="17"){
 				this.sTime="7:00 AM";
 				this.eTime="15:30 PM";
-				this.sTimet="15:30 AM";
+				this.sTimet="15:30 PM";
 				this.eTimet="23:59 PM";
 			}
 			
