@@ -260,7 +260,7 @@ var gta = new Vue({
 					if (this.turnos[i].tdate=="D")
 						this.output += 'T.DIA,'+startDate+','+this.sTime+','+startDate+','+this.eTime+',AIRPORT,\n';
 					else if (this.turnos[i].tdate=="N")
-						this.output += 'T.NOCHE,'+startDate+','+this.sTime+','+endDate+','+this.eTime+',AIRPORT,\n';
+						this.output += 'T.NOCHE,'+startDate+','+this.eTime+','+endDate+','+this.sTime+',AIRPORT,\n';
 					else if (this.turnos[i].tdate=="M")
 						this.output += 'MAÑANA,'+startDate+','+this.sTime+','+startDate+','+this.eTime+',AIRPORT,\n';
 					else if (this.turnos[i].tdate=="T")
