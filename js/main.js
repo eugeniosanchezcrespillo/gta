@@ -229,12 +229,15 @@ var gta = new Vue({
             this.tipo = e.options[e.selectedIndex].value;
 			
 			//timetable
-			if (this.tipo=="9"){
-				this.sTime="9:00 AM";
-				this.eTime="21:00 PM";
+			if (this.tipo=="7"){
+				this.sTime="7:00 AM";
+				this.eTime="19:00 PM";
 			}else if (this.tipo=="8"){
 				this.sTime="8:00 AM";
 				this.eTime="20:00 PM";
+			}else if (this.tipo=="9"){
+				this.sTime="9:00 AM";
+				this.eTime="21:00 PM";
 			}else if (this.tipo=="17"){
 				this.sTime="7:00 AM";
 				this.eTime="15:30 PM";
